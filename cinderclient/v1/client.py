@@ -15,6 +15,7 @@
 
 from cinderclient import client
 from cinderclient.v1 import availability_zones
+from cinderclient.v1 import geo_tags
 from cinderclient.v1 import limits
 from cinderclient.v1 import qos_specs
 from cinderclient.v1 import quota_classes
@@ -72,7 +73,7 @@ class Client(object):
         self.services = services.ServiceManager(self)
         self.availability_zones = \
             availability_zones.AvailabilityZoneManager(self)
-
+        self.geo_tags = geo_tags.GeoTagsManager(self)
         # Add in any extensions...
         if extensions:
             for extension in extensions:
