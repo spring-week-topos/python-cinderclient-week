@@ -29,7 +29,6 @@ from cinderclient import utils
 from cinderclient.v1 import availability_zones
 
 
-
 def _poll_for_status(poll_fn, obj_id, action, final_ok_states,
                      poll_period=5, show_progress=True):
     """Block while an action is being performed, periodically printing
@@ -986,7 +985,8 @@ def do_extend(cs, args):
 def do_service_list(cs, args):
     """List all the services. Filter by host & service binary."""
     result = cs.services.list(host=args.host, binary=args.binary)
-    columns = ["Binary", "Host", "Zone", "Status", "State", "Updated_at", "Geo Tag"]
+    columns = ["Binary", "Host", "Zone", "Status", "State", "Updated_at",
+               "Geo Tag"]
     utils.print_list(result, columns)
 
 
@@ -1392,16 +1392,14 @@ def do_readonly_mode_update(cs, args):
     cs.volumes.update_readonly_flag(volume,
                                     strutils.bool_from_string(args.read_only))
 
-@utils.arg('--host', metavar='<hostname>', default=None,
-           help=('Name of host.'))
+
 def do_geo_tags_list(cs, args):
     """Show current geotags."""
-    result = cs.geo_tags.list(host=args.host)
-    
+    result = cs.geo_tags.list()
     columns = ['Server Name', 'Valid_Invalid', 'mac_address',
                'plt_longitude', 'plt_latitude']
-    
     utils.print_list(result, columns)
+
 
 @utils.arg('host', metavar='<hostname>', help=('Name of host.'))
 @utils.arg('--state', metavar='<valid>', default='Valid',
@@ -1412,22 +1410,21 @@ def do_geo_tags_list(cs, args):
            dest='lat', help=('Latitude.'))
 def do_geo_tags_create(cs, args):
     """Show current geotags."""
-    kwargs = {'compute_name': args.host, 
+    kwargs = {'compute_name': args.host,
               'valid_invalid': args.state,
               'plt_longitude': args.long,
               'plt_latitude': args.lat
-              
               }
-              
     cs.geo_tags.create(**kwargs)
- 
 
-@utils.arg('host_or_id', metavar='<hostname or id>', help=('Name of host or GeoTag ID'))
-@utils.arg('--state', metavar='<valid>', 
+
+@utils.arg('host_or_id', metavar='<hostname or id>',
+           help=('Name of host or GeoTag ID'))
+@utils.arg('--state', metavar='<valid>',
            dest='state', help=('Valid/Invalid'))
-@utils.arg('--plt-longitude', metavar='<longitude>', 
+@utils.arg('--plt-longitude', metavar='<longitude>',
            dest='long', help=('Longitude Coord'))
-@utils.arg('--plt-latitude', metavar='<latitude>', 
+@utils.arg('--plt-latitude', metavar='<latitude>',
            dest='lat', help=('Latitude.'))
 def do_geo_tags_update(cs, args):
     """Show current geotags."""
@@ -1438,23 +1435,25 @@ def do_geo_tags_update(cs, args):
         kwargs['plt_longitude'] = args.long
     if args.lat:
         kwargs['plt_latitude'] = args.lat
-        
+
     cs.geo_tags.update(args.host_or_id, **kwargs)
-    
-@utils.arg('host_or_id', metavar='<hostname or id>', help=('Name of host or GeoTag ID'))
+
+
+@utils.arg('host_or_id', metavar='<hostname or id>',
+           help=('Name of host or GeoTag ID'))
 def do_geo_tags_delete(cs, args):
     """Delete geotags."""
     cs.geo_tags.delete(args.host_or_id)
 
-def _print_geo_tag(geo_tag):
-    utils.print_list(geo_tag, ['ID', 'Server Name', 'mac_address', 'plt_longitude',
-                               'plt_latitude'])
 
-    
-@utils.arg('host_or_id', metavar='<hostname or id>', help=('Name of host or GeoTag ID'))
+def _print_geo_tag(geo_tag):
+    utils.print_list(geo_tag, ['ID', 'Server Name', 'mac_address',
+                               'plt_longitude', 'plt_latitude'])
+
+
+@utils.arg('host_or_id', metavar='<hostname or id>',
+           help=('Name of host or GeoTag ID'))
 def do_geo_tags_show(cs, args):
     """Show details about a GeoTag."""
     geo_tag = cs.geo_tags.show(args.host_or_id)
     _print_geo_tag([geo_tag])
-
-
