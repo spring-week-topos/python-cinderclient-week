@@ -1397,7 +1397,7 @@ def do_geo_tags_list(cs, args):
     """Show current geotags."""
     result = cs.geo_tags.list()
     columns = ['Server Name', 'Valid_Invalid', 'mac_address',
-               'plt_longitude', 'plt_latitude']
+               'plt_longitude', 'plt_latitude', 'loc_or_error_msg']
     utils.print_list(result, columns)
 
 
@@ -1408,12 +1408,15 @@ def do_geo_tags_list(cs, args):
            dest='long', help=('Longitude Coord.'))
 @utils.arg('--plt-latitude', metavar='<latitude>', default=None,
            dest='lat', help=('Latitude.'))
+@utils.arg('--location', metavar='<location>', default=None,
+           dest='loc', help=('Location.'))
 def do_geo_tags_create(cs, args):
     """Show current geotags."""
     kwargs = {'compute_name': args.host,
               'valid_invalid': args.state,
               'plt_longitude': args.long,
-              'plt_latitude': args.lat
+              'plt_latitude': args.lat,
+              'loc_or_error_msg': args.loc
               }
     cs.geo_tags.create(**kwargs)
 
@@ -1426,6 +1429,8 @@ def do_geo_tags_create(cs, args):
            dest='long', help=('Longitude Coord'))
 @utils.arg('--plt-latitude', metavar='<latitude>',
            dest='lat', help=('Latitude.'))
+@utils.arg('--location', metavar='<location>',
+           dest='loc', help=('Location.'))
 def do_geo_tags_update(cs, args):
     """Show current geotags."""
     kwargs = {}
@@ -1435,6 +1440,8 @@ def do_geo_tags_update(cs, args):
         kwargs['plt_longitude'] = args.long
     if args.lat:
         kwargs['plt_latitude'] = args.lat
+    if args.loc:
+        kwargs['loc_or_error_msg'] = args.loc
 
     cs.geo_tags.update(args.host_or_id, **kwargs)
 
@@ -1448,7 +1455,8 @@ def do_geo_tags_delete(cs, args):
 
 def _print_geo_tag(geo_tag):
     utils.print_list(geo_tag, ['ID', 'Server Name', 'mac_address',
-                               'plt_longitude', 'plt_latitude'])
+                               'plt_longitude', 'plt_latitude',
+                               'loc_or_error_msg'])
 
 
 @utils.arg('host_or_id', metavar='<hostname or id>',
