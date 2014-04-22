@@ -1397,7 +1397,8 @@ def do_geo_tags_list(cs, args):
     """Show current geotags."""
     result = cs.geo_tags.list()
     columns = ['Server Name', 'Valid_Invalid', 'mac_address',
-               'plt_longitude', 'plt_latitude', 'loc_or_error_msg']
+               'plt_longitude', 'plt_latitude', 'loc_or_error_msg',
+               'power_state']
     utils.print_list(result, columns)
 
 
@@ -1456,7 +1457,7 @@ def do_geo_tags_delete(cs, args):
 def _print_geo_tag(geo_tag):
     utils.print_list(geo_tag, ['ID', 'Server Name', 'mac_address',
                                'plt_longitude', 'plt_latitude',
-                               'loc_or_error_msg'])
+                               'loc_or_error_msg', 'power_state'])
 
 
 @utils.arg('host_or_id', metavar='<hostname or id>',
